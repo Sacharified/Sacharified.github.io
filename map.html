@@ -4,14 +4,16 @@
         </script>
         <style>
           html, body { height: 100%; margin: 0; padding: 0; }
-          #map { height: 100%; }
+          #map { height: 75%; width: 100%;}
+          #randomise { display: block; width: 250px; background: orange; color: white; height: 100px; margin: 0 auto; }
         </style>
   </head>
   <body>
     <div id="map"></div>
+    <button id="randomise" onclick="reselect();">Re-select</button>
     <script type="text/javascript" src="main.js"></script>
     <script async defer
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAy0bihlPnEwSDca3CxJmRIy5dcjSztCeM&libraries=places&callback=mapInit">
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvztyd9cKH_3MM086UuGR8gL2wIsnkweA&libraries=places&callback=mapInit">
     </script>
 
   </body>
