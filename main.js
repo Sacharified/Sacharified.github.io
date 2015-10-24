@@ -1,27 +1,32 @@
 
 var map;
-
-function initMap() {
-
-    var xanda = new google.maps.LatLng(51.590992,-0.1654489);
+function mapInit() {
     map = new google.maps.Map(document.getElementById('map'), {
-        center: xanda,
+        center: new google.maps.LatLng(0,0),
         zoom: 15
     });
-    console.log(navigator.geolocation);
+    getCurrentPos();
+}
+function getCurrentPos() {
+    if(navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            var current_pos = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+            if(current_pos != undefined) findLocal(current_pos);
+        });
+    }
+}
+
+function findLocal(current_pos) {
+
+    map.setCenter(current_pos);
     var request = {
+        location: current_pos,
         radius: '500',
         types: ['cafe', 'food', 'meal_takeaway', 'meal_delivery']
     };
-    if(navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-            request.location = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
-            console.log(request);
-            map.setCenter(request.location);
-        });
-    }
 
     service = new google.maps.places.PlacesService(map);
+    
     service.nearbySearch(request, callback);
 
     function callback(results, status) {
@@ -39,11 +44,12 @@ function initMap() {
                     results.splice(i, 1);
                     results.push(chosen);
                 }
-
+                
                 createMarker(place, (i === results.length - 1)); 
             } 
         }
     }
+    
     function createMarker(place, selected) {
         var alpha = (selected) ? 1 : 0.2;
         var placeLoc = place.geometry.location;
@@ -52,27 +58,28 @@ function initMap() {
             position: placeLoc,
             opacity: alpha
         });
-
+        
         var html_name = '<h3 class="place-name">'+place.name+'</h3>';
         var html_img = '<img src="'+getPlacePhoto(place)+'" class="place-photo"/>';
-
+        
         marker.info = new google.maps.InfoWindow({
             content: html_name+html_img,
             maxWidth: 500
         });
-
+        
         if (selected) {
             var marker_map = marker.getMap();
             marker.info.open(marker_map, marker);
+            map.setCenter(placeLoc);
         }
-
+        
         google.maps.event.addListener(marker, 'click', function() {  
             var marker_map = this.getMap();
             this.info.open(marker_map, marker);
         });
     }
+    
     function getPlacePhoto(place) {
-        console.log(place.hasOwnProperty('photos'));
         if (place.hasOwnProperty('photos')) { 
             return place.photos[0].getUrl({ maxWidth: 300, maxHeight: 300 });
         }
