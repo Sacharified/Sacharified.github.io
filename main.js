@@ -41,7 +41,7 @@ function randomiseChoices(results) {
     results.sort(function() { return 0.5 - Math.random() });
     var interval = window.setInterval(selectItem, 100);            
     function selectItem() {
-        i == results.length - 1 ? clearInterval(interval) : i++;
+        i + 1 == results.length ? clearInterval(interval) : i++;
         var place = results[i];
         if ( i === rng ) {
             var chosen = results[i];
