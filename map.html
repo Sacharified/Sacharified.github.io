@@ -1,6 +1,7 @@
 <html>
     <head>   
         <script>
+            navigator.geolocation;
         </script>
         <style>
           html, body { height: 100%; margin: 0; padding: 0; }
@@ -10,10 +11,13 @@
   </head>
   <body>
     <div id="map"></div>
-    <button id="randomise" onclick="reselect();">Re-select</button>
+    <form action="">
+        <input id="radius" name="radius" type="number" value="500" required>
+        <button id="randomise" onclick="reselect();">Re-select</button>
+    </form>
     <script type="text/javascript" src="main.js"></script>
     <script async defer
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvztyd9cKH_3MM086UuGR8gL2wIsnkweA&libraries=places&callback=mapInit">
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvztyd9cKH_3MM086UuGR8gL2wIsnkweA&libraries=places&callback=position">
     </script>
 
   </body>

@@ -1,42 +1,45 @@
 var map;
-var radius = 750;
+var radius = document.querySelector('input#radius').value;
 var selected;
 
 var position = function() {
     var ready = false;
     var current_position;
-    if(navigator.geolocation) {
-        var location = navigator.geolocation.getCurrentPosition(function(position) {
-            current_position = new google.maps.LatLng( position.coords.latitude , position.coords.longitude );
-            //console.log(current_position);
-        });
-        return current_position;
+    if (navigator.geolocation) {
+       var timeoutVal = 10 * 1000 * 1000;
+       navigator.geolocation.watchPosition(mapInit, errorMessage,
+       { enableHighAccuracy: true, timeout: timeoutVal, maximumAge: 0 });
+    }
+    else {
+       alert("Geolocation is not supported by this browser");
     }
 }
 
-function mapInit() {
+function errorMessage(message) {
+    alert ( 'geo-location failed' ); 
+}
+
+function mapInit ( position ) {
     var London = { lat: 51.5287718, lng : -0.2416814 };
     map = new google.maps.Map(document.getElementById('map'), {
         center: London,
         zoom: 15
     });
-    //console.log(position());
-    var geo_interval = window.setInterval( geoCheck , 100 );
-    function geoCheck() {
-        if ( position() != undefined ) {
-            window.clearInterval( geo_interval );
-            map.setCenter( position() );
-        }
-    }
+    
+    setCurrentPos ( position );
 }
 
-function reselect() {
-    console.log('click');
-    findLocal(window.current_pos);
+function setCurrentPos( position ) {
+    var geoCoords = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+    map.setCenter( geoCoords );
+    initSelection( geoCoords );
+}
+
+function initSelection( position ) {
+    findLocal( position );
 }
 
 function findLocal(target_pos) {
-    map.setCenter(target_pos);
     var request = {
         location: target_pos,
         radius: radius,
@@ -165,6 +168,7 @@ function getPlacePhoto(place) {
     if ( place.hasOwnProperty( 'photos ') ) 
         return place.photos[0].getUrl({ maxWidth: 300, maxHeight: 300 });
 }
+
 /** 
 /* pipeline:
 /* 
@@ -174,5 +178,5 @@ function getPlacePhoto(place) {
 /*     - Tel
 /*     - Address
 /* decouple selection function from data object retrieval
-
+*/
 
