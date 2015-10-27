@@ -1,6 +1,5 @@
 var map;
 document.querySelector('input#radius').value = 500;
-var radius = document.querySelector('input#radius').value;
 var selected;
 var locator = {
     ready    : false,
@@ -61,7 +60,7 @@ function initSelection( position ) {
 function findLocal( target_pos , radius ) {
     var request = {
         location: target_pos,
-        radius: radius,
+        radius: document.querySelector('input#radius').value,
         types: ['cafe', 'food', 'meal_takeaway', 'meal_delivery']
     };
 
