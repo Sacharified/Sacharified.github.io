@@ -6,14 +6,15 @@
         <style>
           html, body { height: 100%; margin: 0; padding: 0; }
           #map { height: 75%; width: 100%;}
-          #randomise { display: block; width: 250px; background: orange; color: white; height: 100px; margin: 30px auto; font-size: 30px; }
+          #randomise { display: table; width: 250px; background: orange; color: white; height: 100px; line-height: 100px; margin: 30px auto; font-size: 30px; cursor: pointer; text-align: center;}
         </style>
   </head>
   <body>
     <div id="map"></div>
     <form action="">
-        <input id="radius" name="radius" type="number" value="500" required>
-        <button id="randomise" onclick="reselect();">Re-select</button>
+        <input id="radius" name="radius" type="number" required>
+        <label for="radius">Search radius (meters)</label>
+        <div id="randomise">Re-select</div>
     </form>
     <script type="text/javascript" src="main.js"></script>
     <script async defer

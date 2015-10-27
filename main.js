@@ -1,22 +1,38 @@
 var map;
+document.querySelector('input#radius').value = 500;
 var radius = document.querySelector('input#radius').value;
 var selected;
+var locator = {
+    ready    : false,
+    position : ''
+}
 
+var reselect_btn = document.querySelector('#randomise');
 var position = function() {
-    var ready = false;
+    
     var current_position;
     if (navigator.geolocation) {
        var timeoutVal = 10 * 1000 * 1000;
-       navigator.geolocation.watchPosition(mapInit, errorMessage,
+       navigator.geolocation.getCurrentPosition(locatorCheck, errorMessage,
        { enableHighAccuracy: true, timeout: timeoutVal, maximumAge: 0 });
     }
     else {
        alert("Geolocation is not supported by this browser");
     }
+    
+    function locatorCheck( location ) {
+        if ( typeof location.coords === "object" ) {
+            locator.ready = true;
+            locator.position = location;
+        }
+        console.log(locator.ready);
+        console.log(locator.position);
+        mapInit(locator.position);
+    }
 }
 
 function errorMessage(message) {
-    alert ( 'geo-location failed' ); 
+    alert ( 'Geolocation failed' ); 
 }
 
 function mapInit ( position ) {
@@ -36,10 +52,13 @@ function setCurrentPos( position ) {
 }
 
 function initSelection( position ) {
-    findLocal( position );
+    var x = radius;
+    findLocal( position , radius );
+    document.querySelector('input#radius').value = x;
+    console.log('init' + position);
 }
 
-function findLocal(target_pos) {
+function findLocal( target_pos , radius ) {
     var request = {
         location: target_pos,
         radius: radius,
@@ -124,35 +143,24 @@ function buildContent(place) {
             delete content[key];
             continue;
         }
-        console.log('content = ');
-
         switch(key) {
             
             case "name":
                 html_content.name = '<h3 class="place-name">'+content['name']+'</h3>';
-                console.log('name');
                 break;
             case "img":
                 html_content.img = '<img src="'+content['img']+'" class="place-photo"/>';
-                console.log('img');
-                console.log(key);
                 break;
             case "address":
                 html_content.address = '<p>'+content['address']+'</p>';
-                console.log('add');
                 break;
             case "rating":
                 html_content.rating = '<span class="rating">'+content['rating']+'&#10030;</span>';
-                console.log('rating');
                 break;
             default:
                 break;
         }
-        console.log(html_content);
     }
-    console.log('html = ');
-    console.log(html_content);
-    
     return concatenate ( html_content );
 }
 
@@ -168,6 +176,8 @@ function getPlacePhoto(place) {
     if ( place.hasOwnProperty( 'photos ') ) 
         return place.photos[0].getUrl({ maxWidth: 300, maxHeight: 300 });
 }
+
+reselect_btn.addEventListener('click', position, false);
 
 /** 
 /* pipeline:
